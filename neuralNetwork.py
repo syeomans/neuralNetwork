@@ -44,13 +44,21 @@ class neuralNetwork:
 		#print(self.biases)
 		#print("activations")
 		#print(self.activations)
-		for l in range(1, len(self.activations)): # for each layer, "l"
+		for l in range(1, len(self.shape)): # for each layer, "l"
 			# Each activation is the sigmoid-squished weighted sum of the activations in the previous layer
 			# i.e. sigma(a_l = a_l-1*w_l + b_l)
 			w = self.weights[l-1]
-			a_prev = self.activations[l-1]
-			b = self.biases[l]
-			self.activations[l] = sigmoid(np.dot(a_prev, w) + b)
+			a_prev = np.array(self.activations[l-1])
+			b = self.biases[l-1]
+			print(w.shape)
+			print()
+			print(a_prev.shape)
+			print()
+			print(b.shape)
+			print()
+			self.activations[l] = sigmoid(np.dot(w, a_prev) + b)
+			print(self.activations[l])
+			print()
 			#for n in range(0, len(self.activations[l])): # for each neuron, "n"
 			   # w = self.weights[l-1][n]
 			   # a_prev = self.activations[l-1
