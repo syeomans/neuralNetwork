@@ -14,14 +14,14 @@ def sigmoid(z):
 def sigmoidPrime(z):
     # Derivative of sigmoid function
     return (sigmoid(z)*(1-sigmoid(z)))
-  
+
 def cost (a, y):
     # Cost function C = 0.5 * sum((y - a)^2)
     # where a is the activations vector, and y is the correct outputs vector
     return(np.sum(np.square(y-a))*0.5)
 
 def costDerivative(a, y):
-    # Derivative of cost function with respect to the activations: C' = a-y 
+    # Derivative of cost function with respect to the activations: C' = a-y
     # where a is the activations vector, and y is the correct outputs vector
     return(a-y)
 
@@ -47,9 +47,9 @@ class neuralNetwork:
         print(self.biases)
         print()
 
-    
+
     def feedForward(self, inputs):
-        self.activations[0] = inputs
+        self.activations[0] = np.array(inputs)
         print("layer 0: ")
         print(self.activations[0])
         l = 0
@@ -71,7 +71,7 @@ class neuralNetwork:
             #self.activations[l] = sigmoid(np.dot(w, a_prev) + b)
         #print(self.activations)
         print()
-    
+
     def backPropagate(self, inputs, correctAnswers):
         '''
         See here for formulas: http://neuralnetworksanddeeplearning.com/chap2.html#the_code_for_backpropagation
@@ -83,10 +83,10 @@ class neuralNetwork:
         '''
         gradC_b = [np.zeros(b.shape) for b in self.biases]
         gradC_w = [np.zeros(w.shape) for w in self.weights]
-        
+
         # (1) and (2)
         self.feedForward(inputs)
-        
+
         # (3)
         #print(self.activations[-1])
         #print()
@@ -104,23 +104,30 @@ class neuralNetwork:
         print("activation:")
         a = self.activations[-2]
         a.shape = (1, len(a))
-        print(a.T)
-        
-        gradC_w[-1] = np.dot(errorL, a.T)
-        
+        errorL.shape = (len(errorL), 1)
+        gradC_w[-1] = np.dot(errorL, a)
+        print("gradC_w: ")
+        print(gradC_w[-1])
+        print("\n\n")
+
         # (4) and (5)
         for l in range(len(self.shape)-2, -1, -1):
-            errorL = np.dot(self.weights[l+1].transpose(),errorL) * sigmoidPrime(self.z[l])
+            print("l: \n" + str(l))
+            errorL = np.dot(self.weights[l].transpose(),errorL) * sigmoidPrime(self.z[l])
             gradC_b[l] = errorL
+            print("errorL: ")
+            print(errorL)
+            print("activations:")
+            print(self.activations[l-1].transpose())
             gradC_w[l] = np.dot(errorL, self.activations[l-1].transpose())
-        
-        return(gradC_b, gradC_w)
-        
 
-            
-            
-##### Test code #####            
-            
+        return(gradC_b, gradC_w)
+
+
+
+
+##### Test code #####
+
 # Load abridged data
 #abridgedData = pickle.load(open('abridgedData.pickle', 'rb'))
 #pixels = abridgedData[0]
